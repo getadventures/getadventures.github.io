@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>CORS Test Local</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    button { padding: 10px 20px; font-size: 16px; cursor: pointer; }
+    pre { background: #eee; padding: 10px; border: 1px solid #ddd; white-space: pre-wrap; word-wrap: break-word; }
+  </style>
+</head>
+<body>
+  <h1>CORS Test from Localhost</h1>
+  <p>Ini akan memanggil API Apps Script.</p>
+  <button onclick="testApi()">Panggil Apps Script API</button>
+  <h3>Response:</h3>
+  <pre id="responseOutput"></pre>
+
+  <script>
+    // PASTE URL API BARU DARI LANGKAH 2.6 DI SINI
+    const TEST_API_URL = 'https://script.google.com/macros/s/AKfycbzF1KfcS4BJct9ffOnHUKNDmnkjHmA5HxohkcLZy5lQdvxVa1x9lbws4JQmNW4-t94jRg/exec'; 
+
+    async function testApi() {
+      const output = document.getElementById('responseOutput');
+      output.textContent = 'Mengirim permintaan...';
+      console.log('Mengirim permintaan ke:', TEST_API_URL);
+
+      try {
+        const response = await fetch(TEST_API_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json' 
+          },
+          body: JSON.stringify({ client: 'localhost_test', timestamp: new Date().toISOString() })
+        });
+
+        if (!response.ok) {
+          const errorText = await response.text(); // Coba baca teks error dari respons
+          throw new Error(`HTTP error! Status: ${response.status}. Response: ${errorText}`);
+        }
+
+        const data = await response.json();
+        output.textContent = JSON.stringify(data, null, 2);
+        console.log('Respons berhasil:', data);
+
+      } catch (error) {
+        output.textContent = `Error: ${error.message}`;
+        console.error('Ada masalah dengan operasi fetch:', error);
+      }
+    }
+  </script>
+</body>
+</html>
